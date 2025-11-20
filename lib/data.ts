@@ -14,6 +14,28 @@ export interface Prompt {
   isPopular?: boolean;
 }
 
+export interface TrendingPost {
+  id: string;
+  author: string;
+  title: string;
+  description: string;
+  votes: number;
+  url?: string;
+}
+
+export interface Job {
+  id: string;
+  company: string;
+  companyLogo?: string;
+  title: string;
+  description: string;
+  location: string;
+  type: "Remote" | "On site" | "Global" | "Hybrid";
+  experience?: string;
+  tags?: string[];
+  isFeatured?: boolean;
+}
+
 export const categories: Category[] = [
   { id: "typescript", name: "TypeScript", count: 23 },
   { id: "python", name: "Python", count: 16 },
@@ -244,10 +266,116 @@ Database
 
 export const navigationLinks = [
   { name: "Rules", href: "#" },
-  { name: "Trending", href: "#" },
-  { name: "Jobs", href: "#" },
+  { name: "Trending", href: "/trending" },
+  { name: "Jobs", href: "/jobs" },
   { name: "MCPs", href: "#" },
   { name: "Generate", href: "#" },
   { name: "Members", href: "#" },
   { name: "More", href: "#" },
+];
+
+export const trendingPosts: TrendingPost[] = [
+  {
+    id: "1",
+    author: "adina",
+    title: "Why do we even need MCP?",
+    description: "The fundamental difference between agentic tools and API endpoints is the separation of concerns present in most modern REST APIs. In practice, this means that one endpoint serves one particular purpose for the given data model, and most use...",
+    votes: 5,
+    url: "#"
+  },
+  {
+    id: "2",
+    author: "adina",
+    title: "A New Imperative for Developer-facing UIs",
+    description: "Building good MCP servers is legitimately difficult. It's not just wrapping your API in a different protocol. You have to think like an agent - what context do you need? What use cases do I want to serve? What happens when requirements don't fit i...",
+    votes: 5,
+    url: "#"
+  },
+  {
+    id: "3",
+    author: "adina",
+    title: "What most people get wrong about MCP",
+    description: "The real question is whether MCP will reach critical mass before something else comes along to replace it. The standards wars are just beginning, and I'm not convinced MCP will be the final word. But whatever wins, these legacy integration...",
+    votes: 2,
+    url: "#"
+  },
+  {
+    id: "4",
+    author: "Pontus Abrahamsson",
+    title: "Cursor raised $2.3B in Series D",
+    description: "Cursor has raised $2.3 billion in Series D funding, reaching a valuation of over $30 billion. This marks one of the largest funding rounds in the AI coding assistant space.",
+    votes: 2,
+    url: "#"
+  },
+];
+
+export const jobs: Job[] = [
+  {
+    id: "1",
+    company: "PackFlow",
+    companyLogo: "P",
+    title: "Visual Workflow Developer",
+    description: "We're looking for an experienced front-end developer with strong design skills...",
+    location: "San Francisco, Remote US",
+    type: "Remote",
+    experience: "2+",
+    isFeatured: true,
+  },
+  {
+    id: "2",
+    company: "Mixedbread",
+    companyLogo: "M",
+    title: "AI Software Baker",
+    description: "Mixedbread (6-person seed team) Makes next-gen search; our OSS model...",
+    location: "Remote",
+    type: "Remote",
+    experience: "6-person seed team",
+    isFeatured: true,
+  },
+  {
+    id: "3",
+    company: "Mintlify",
+    companyLogo: "🌿",
+    title: "AI Engineer",
+    description: "Mintlify empowers builders worldwide.",
+    location: "Remote",
+    type: "On site",
+    isFeatured: true,
+  },
+  {
+    id: "4",
+    company: "Resend",
+    companyLogo: "R",
+    title: "Software Engineer (Back-end)",
+    description: "Resend is looking for a skilled Software Engineer to join our team and help us...",
+    location: "Americas / Remote",
+    type: "Remote",
+    isFeatured: true,
+  },
+  {
+    id: "5",
+    company: "Infisical",
+    title: "Solutions Engineer",
+    description: "We're looking for an exceptional Solutions Engineer, or DevOps engineer to help grow Infisical's customer base and ensure a seamless product experience from onboarding to long-term success...",
+    location: "San Francisco, Remote US",
+    type: "Remote",
+    experience: "2+",
+  },
+  {
+    id: "6",
+    company: "Infisical",
+    title: "Developer Relations Lead",
+    description: "This role blends technical storytelling with content creation. Across documentation, educational videos, and community platforms — you will be the front line in educating developers with content that's clear...",
+    location: "San Francisco, Remote",
+    type: "Remote",
+    experience: "2",
+  },
+  {
+    id: "7",
+    company: "Infisical",
+    title: "Full Stack Engineer",
+    description: "You'll be working closely with our CTO and the rest of the engineering team to:",
+    location: "Global",
+    type: "Remote",
+  },
 ];

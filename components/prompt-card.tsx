@@ -95,29 +95,24 @@ export function PromptCard({ prompt, variant = "small", className }: PromptCardP
       <div className="relative flex-1">
         {/* Outer rectangle - elevation layer */}
         <div className={cn(
-          "absolute inset-0 rounded border bg-zinc-900/50 transition-all duration-200",
-          isLarge ? "left-3 top-3 border-zinc-700/60" : "left-2 top-2 border-zinc-700/50 group-hover/card:border-zinc-600/60"
+          "absolute inset-0 border bg-zinc-900/40 transition-all duration-200",
+          isLarge ? "left-3 top-3 border-zinc-800/60" : "left-2 top-2 border-zinc-800/50 group-hover/card:border-zinc-700/70"
         )} />
         
         {/* Inner rectangle - main card */}
         <div
           onClick={handleCardClick}
           className={cn(
-            "relative flex flex-col rounded-xl border border-white/10 bg-[#0A0A0A] transition-all duration-200 overflow-hidden",
+            "relative flex flex-col border bg-[#0A0A0A] transition-all duration-200 overflow-hidden",
             isLarge 
-              ? "hover:border-zinc-600 h-full" 
-              : "cursor-pointer hover:border-zinc-600 h-[350px]"
+              ? "border-zinc-800/80 hover:border-zinc-700 h-full" 
+              : "border-zinc-800/70 cursor-pointer group-hover/card:border-zinc-700 h-[350px]"
           )}
         >
           {/* Content Area with Custom Scrollbar */}
           <div className={cn(
             "h-full overflow-y-auto",
-            isLarge ? "p-8" : "p-6",
-            // Custom scrollbar styles
-            "[&::-webkit-scrollbar]:w-1.5",
-            "[&::-webkit-scrollbar-track]:bg-transparent",
-            "[&::-webkit-scrollbar-thumb]:bg-zinc-700",
-            "[&::-webkit-scrollbar-thumb]:rounded-full"
+            isLarge ? "p-8" : "p-6"
           )}>
             <pre className={cn(
               "whitespace-pre-wrap font-mono leading-relaxed text-zinc-300",
