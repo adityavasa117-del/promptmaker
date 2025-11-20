@@ -76,7 +76,7 @@ export default function Home() {
             </div>
 
             {/* Prompts Grid */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-3 gap-4">
               {filteredPrompts.map((prompt) => (
                 <PromptCard key={prompt.id} prompt={prompt} />
               ))}

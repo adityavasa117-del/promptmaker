@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Prompt } from "@/lib/data";
-import { Share2, Copy, Download } from "lucide-react";
+import { Share2, Copy, Download, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -69,58 +69,54 @@ export function PromptCard({ prompt, variant = "small", className }: PromptCardP
 
   return (
     <div className={cn("group/card flex h-full flex-col", className)}>
-      {/* Title and Tags - Outside the box */}
-      <div className={cn("mb-4 space-y-3", isLarge ? "mb-6" : "mb-4")}>
-        <h3 className={cn(
-          "font-semibold text-white",
-          isLarge ? "text-3xl" : "text-2xl"
-        )}>
-          {prompt.title}
-        </h3>
-        {prompt.tags && prompt.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {prompt.tags.map((tag) => (
-              <Badge
-                key={tag}
-                variant="secondary"
-                className={cn(
-                  "rounded-md border border-zinc-700 bg-zinc-800/50 font-medium text-zinc-300",
-                  isLarge ? "px-4 py-1.5 text-sm" : "px-3 py-1 text-xs"
-                )}
-              >
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Title and Tags - Only for large variant (detail page) */}
+      {isLarge && (
+        <div className="mb-6 space-y-3">
+          <h3 className="text-3xl font-semibold text-white">
+            {prompt.title}
+          </h3>
+          {prompt.tags && prompt.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {prompt.tags.map((tag) => (
+                <Badge
+                  key={tag}
+                  variant="secondary"
+                  className="rounded-md border border-zinc-700 bg-zinc-800/50 px-4 py-1.5 text-sm font-medium text-zinc-300"
+                >
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Main Card Container with Offset Effect */}
       <div className="relative flex-1">
         {/* Outer rectangle - elevation layer */}
         <div className={cn(
-          "absolute inset-0 border border-zinc-800/50 bg-zinc-900/20",
-          isLarge ? "left-4 top-4" : "left-3 top-3"
+          "absolute inset-0 rounded border bg-zinc-900/50 transition-all duration-200",
+          isLarge ? "left-3 top-3 border-zinc-700/60" : "left-2 top-2 border-zinc-700/50 group-hover/card:border-zinc-600/60"
         )} />
         
         {/* Inner rectangle - main card */}
         <div
           onClick={handleCardClick}
           className={cn(
-            "relative flex h-full flex-col border border-zinc-700/80 bg-[#18181b] transition-all duration-200",
+            "relative flex flex-col rounded border bg-zinc-900 transition-all duration-200 overflow-hidden",
             isLarge 
-              ? "hover:border-zinc-600" 
-              : "cursor-pointer hover:border-zinc-600"
+              ? "border-white/10 hover:border-white/20 h-full" 
+              : "border-white/10 cursor-pointer group-hover/card:border-white/20 group-hover/card:bg-zinc-900/90 h-[350px]"
           )}
         >
-          {/* Content Area */}
-          <div className="flex-1 overflow-hidden">
-            <div className={cn(
-              "h-full overflow-auto border-b border-zinc-800/50 bg-[#0f0f11]",
-              isLarge ? "p-8" : "p-5"
-            )}>
+          {/* Content Area with Custom Scrollbar */}
+          <div className={cn(
+            "flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-zinc-700 hover:scrollbar-thumb-zinc-600",
+            isLarge ? "p-8" : "p-6 pr-3"
+          )}>
+            <div className={isLarge ? "" : "pr-3"}>
               <pre className={cn(
-                "whitespace-pre-wrap font-mono leading-relaxed text-zinc-300",
+                "whitespace-pre-wrap font-mono leading-relaxed text-zinc-400",
                 isLarge ? "text-sm" : "text-[13px]"
               )}>
                 {prompt.content}
@@ -128,28 +124,48 @@ export function PromptCard({ prompt, variant = "small", className }: PromptCardP
             </div>
           </div>
 
-          {/* Action Buttons - Footer */}
-          <div className={cn(
-            "flex items-center justify-center gap-4 border-t border-zinc-800/50 bg-[#18181b]",
-            isLarge ? "px-8 py-5" : "px-6 py-4"
-          )}>
-            {actions.map(({ label, icon: Icon, onClick }) => (
-              <Button
-                key={label}
-                type="button"
-                variant="ghost"
-                onClick={onClick}
-                size="sm"
-                className={cn(
-                  "gap-2 text-zinc-400 hover:text-zinc-200",
-                  isLarge ? "text-sm" : "text-xs"
-                )}
+          {/* Floating Action Buttons - Only for small variant */}
+          {!isLarge && (
+            <div className="absolute bottom-4 right-4 z-10 flex gap-2">
+              {/* Backdrop for readability */}
+              <div className="absolute inset-0 -inset-x-2 -inset-y-2 bg-gradient-to-t from-zinc-900 via-zinc-900/95 to-transparent blur-sm" />
+              
+              <button
+                onClick={handleShare}
+                className="relative z-10 flex h-8 w-8 items-center justify-center rounded-md border border-white/10 bg-zinc-800/80 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-zinc-700/80"
+                title="Share"
               >
-                <Icon className={cn(isLarge ? "h-5 w-5" : "h-4 w-4")} />
-                {label}
-              </Button>
-            ))}
-          </div>
+                <ExternalLink className="h-4 w-4 text-zinc-400" />
+              </button>
+              
+              <button
+                onClick={handleCopy}
+                className="relative z-10 flex h-8 w-8 items-center justify-center rounded-md border border-white/10 bg-zinc-800/80 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-zinc-700/80"
+                title="Copy"
+              >
+                <Copy className="h-4 w-4 text-zinc-400" />
+              </button>
+            </div>
+          )}
+
+          {/* Action Buttons - Only for large variant (detail page) */}
+          {isLarge && (
+            <div className="flex items-center justify-center gap-4 border-t border-zinc-800/50 bg-zinc-900 px-8 py-5">
+              {actions.map(({ label, icon: Icon, onClick }) => (
+                <Button
+                  key={label}
+                  type="button"
+                  variant="ghost"
+                  onClick={onClick}
+                  size="sm"
+                  className="gap-2 text-sm text-zinc-400 hover:text-zinc-200"
+                >
+                  <Icon className="h-5 w-5" />
+                  {label}
+                </Button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
