@@ -103,54 +103,54 @@ export function PromptCard({ prompt, variant = "small", className }: PromptCardP
         <div
           onClick={handleCardClick}
           className={cn(
-            "relative flex flex-col rounded border bg-zinc-900 transition-all duration-200 overflow-hidden",
+            "relative flex flex-col rounded-xl border border-white/10 bg-[#0A0A0A] transition-all duration-200 overflow-hidden",
             isLarge 
-              ? "border-white/10 hover:border-white/20 h-full" 
-              : "border-white/10 cursor-pointer group-hover/card:border-white/20 group-hover/card:bg-zinc-900/90 h-[350px]"
+              ? "hover:border-zinc-600 h-full" 
+              : "cursor-pointer hover:border-zinc-600 h-[350px]"
           )}
         >
           {/* Content Area with Custom Scrollbar */}
           <div className={cn(
-            "flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-zinc-700 hover:scrollbar-thumb-zinc-600",
-            isLarge ? "p-8" : "p-6 pr-3"
+            "h-full overflow-y-auto",
+            isLarge ? "p-8" : "p-6",
+            // Custom scrollbar styles
+            "[&::-webkit-scrollbar]:w-1.5",
+            "[&::-webkit-scrollbar-track]:bg-transparent",
+            "[&::-webkit-scrollbar-thumb]:bg-zinc-700",
+            "[&::-webkit-scrollbar-thumb]:rounded-full"
           )}>
-            <div className={isLarge ? "" : "pr-3"}>
-              <pre className={cn(
-                "whitespace-pre-wrap font-mono leading-relaxed text-zinc-400",
-                isLarge ? "text-sm" : "text-[13px]"
-              )}>
-                {prompt.content}
-              </pre>
-            </div>
+            <pre className={cn(
+              "whitespace-pre-wrap font-mono leading-relaxed text-zinc-300",
+              isLarge ? "text-sm pr-4" : "text-[13px] pr-4"
+            )}>
+              {prompt.content}
+            </pre>
           </div>
 
           {/* Floating Action Buttons - Only for small variant */}
           {!isLarge && (
-            <div className="absolute bottom-4 right-4 z-10 flex gap-2">
-              {/* Backdrop for readability */}
-              <div className="absolute inset-0 -inset-x-2 -inset-y-2 bg-gradient-to-t from-zinc-900 via-zinc-900/95 to-transparent blur-sm" />
-              
+            <div className="absolute bottom-4 right-4 z-10 flex gap-2 opacity-0 transition-opacity duration-200 group-hover/card:opacity-100">
               <button
                 onClick={handleShare}
-                className="relative z-10 flex h-8 w-8 items-center justify-center rounded-md border border-white/10 bg-zinc-800/80 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-zinc-700/80"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:shadow-md"
                 title="Share"
               >
-                <ExternalLink className="h-4 w-4 text-zinc-400" />
+                <ExternalLink className="h-4 w-4 text-black" />
               </button>
               
               <button
                 onClick={handleCopy}
-                className="relative z-10 flex h-8 w-8 items-center justify-center rounded-md border border-white/10 bg-zinc-800/80 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-zinc-700/80"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:shadow-md"
                 title="Copy"
               >
-                <Copy className="h-4 w-4 text-zinc-400" />
+                <Copy className="h-4 w-4 text-black" />
               </button>
             </div>
           )}
 
           {/* Action Buttons - Only for large variant (detail page) */}
           {isLarge && (
-            <div className="flex items-center justify-center gap-4 border-t border-zinc-800/50 bg-zinc-900 px-8 py-5">
+            <div className="relative z-10 flex items-center justify-center gap-4 border-t border-zinc-800/50 bg-[#0A0A0A] px-8 py-5">
               {actions.map(({ label, icon: Icon, onClick }) => (
                 <Button
                   key={label}
