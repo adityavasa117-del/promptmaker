@@ -6,16 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Prompt } from "@/lib/data";
 import { Share2, Copy, Download } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface PromptCardProps {
   prompt: Prompt;
+  variant?: "small" | "large";
+  className?: string;
 }
 
-export function PromptCard({ prompt }: PromptCardProps) {
+export function PromptCard({ prompt, variant = "small", className }: PromptCardProps) {
   const router = useRouter();
 
   const handleCardClick = () => {
-    router.push(`/prompt/${prompt.id}`);
+    if (variant === "small") {
+      router.push(`/prompt/${prompt.id}`);
+    }
   };
 
   const handleShare = async (e: React.MouseEvent) => {
@@ -60,11 +65,16 @@ export function PromptCard({ prompt }: PromptCardProps) {
     { label: "Save", icon: Download, onClick: handleSaveAsMd },
   ];
 
+  const isLarge = variant === "large";
+
   return (
-    <div className="group/card flex h-full flex-col">
+    <div className={cn("group/card flex h-full flex-col", className)}>
       {/* Title and Tags - Outside the box */}
-      <div className="mb-4 space-y-3">
-        <h3 className="text-2xl font-semibold text-white">
+      <div className={cn("mb-4 space-y-3", isLarge ? "mb-6" : "mb-4")}>
+        <h3 className={cn(
+          "font-semibold text-white",
+          isLarge ? "text-3xl" : "text-2xl"
+        )}>
           {prompt.title}
         </h3>
         {prompt.tags && prompt.tags.length > 0 && (
@@ -73,7 +83,10 @@ export function PromptCard({ prompt }: PromptCardProps) {
               <Badge
                 key={tag}
                 variant="secondary"
-                className="rounded-md border border-zinc-700 bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-300"
+                className={cn(
+                  "rounded-md border border-zinc-700 bg-zinc-800/50 font-medium text-zinc-300",
+                  isLarge ? "px-4 py-1.5 text-sm" : "px-3 py-1 text-xs"
+                )}
               >
                 {tag}
               </Badge>
@@ -85,24 +98,41 @@ export function PromptCard({ prompt }: PromptCardProps) {
       {/* Main Card Container with Offset Effect */}
       <div className="relative flex-1">
         {/* Outer rectangle - elevation layer */}
-        <div className="absolute inset-0 left-3 top-3 border border-zinc-800/50 bg-zinc-900/20" />
+        <div className={cn(
+          "absolute inset-0 border border-zinc-800/50 bg-zinc-900/20",
+          isLarge ? "left-4 top-4" : "left-3 top-3"
+        )} />
         
         {/* Inner rectangle - main card */}
         <div
           onClick={handleCardClick}
-          className="relative flex h-full cursor-pointer flex-col border border-zinc-700/80 bg-[#18181b] transition-all duration-200 hover:border-zinc-600"
+          className={cn(
+            "relative flex h-full flex-col border border-zinc-700/80 bg-[#18181b] transition-all duration-200",
+            isLarge 
+              ? "hover:border-zinc-600" 
+              : "cursor-pointer hover:border-zinc-600"
+          )}
         >
           {/* Content Area */}
           <div className="flex-1 overflow-hidden">
-            <div className="h-full overflow-auto border-b border-zinc-800/50 bg-[#0f0f11] p-5">
-              <pre className="whitespace-pre-wrap font-mono text-[13px] leading-relaxed text-zinc-300">
+            <div className={cn(
+              "h-full overflow-auto border-b border-zinc-800/50 bg-[#0f0f11]",
+              isLarge ? "p-8" : "p-5"
+            )}>
+              <pre className={cn(
+                "whitespace-pre-wrap font-mono leading-relaxed text-zinc-300",
+                isLarge ? "text-sm" : "text-[13px]"
+              )}>
                 {prompt.content}
               </pre>
             </div>
           </div>
 
           {/* Action Buttons - Footer */}
-          <div className="flex items-center justify-center gap-4 border-t border-zinc-800/50 bg-[#18181b] px-6 py-4">
+          <div className={cn(
+            "flex items-center justify-center gap-4 border-t border-zinc-800/50 bg-[#18181b]",
+            isLarge ? "px-8 py-5" : "px-6 py-4"
+          )}>
             {actions.map(({ label, icon: Icon, onClick }) => (
               <Button
                 key={label}
@@ -110,9 +140,12 @@ export function PromptCard({ prompt }: PromptCardProps) {
                 variant="ghost"
                 onClick={onClick}
                 size="sm"
-                className="gap-2 text-xs text-zinc-400 hover:text-zinc-200"
+                className={cn(
+                  "gap-2 text-zinc-400 hover:text-zinc-200",
+                  isLarge ? "text-sm" : "text-xs"
+                )}
               >
-                <Icon className="h-4 w-4" />
+                <Icon className={cn(isLarge ? "h-5 w-5" : "h-4 w-4")} />
                 {label}
               </Button>
             ))}
