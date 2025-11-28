@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Prompt } from "@/lib/data";
+import { Prompt } from "@/lib/queries";
 import { Share2, Copy, Download, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -71,17 +71,17 @@ export function PromptCard({ prompt, variant = "small", className }: PromptCardP
     <div className={cn("group/card flex h-full flex-col", className)}>
       {/* Title and Tags - Only for large variant (detail page) */}
       {isLarge && (
-        <div className="mb-6 space-y-3">
-          <h3 className="text-3xl font-semibold text-white">
+        <div className="mb-4 sm:mb-6 space-y-2 sm:space-y-3">
+          <h3 className="text-xl sm:text-3xl font-semibold text-white">
             {prompt.title}
           </h3>
           {prompt.tags && prompt.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {prompt.tags.map((tag) => (
                 <Badge
                   key={tag}
                   variant="secondary"
-                  className="rounded-md border border-zinc-700 bg-zinc-800/50 px-4 py-1.5 text-sm font-medium text-zinc-300"
+                  className="rounded-md border border-zinc-700 bg-zinc-800/50 px-2 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-medium text-zinc-300"
                 >
                   {tag}
                 </Badge>
@@ -96,7 +96,7 @@ export function PromptCard({ prompt, variant = "small", className }: PromptCardP
         {/* Outer rectangle - elevation layer */}
         <div className={cn(
           "absolute inset-0 border bg-zinc-900/40 transition-all duration-200",
-          isLarge ? "left-3 top-3 border-zinc-800/60" : "left-2 top-2 border-zinc-800/50 group-hover/card:border-zinc-700/70"
+          isLarge ? "left-2 sm:left-3 top-2 sm:top-3 border-zinc-800/60" : "left-1.5 sm:left-2 top-1.5 sm:top-2 border-zinc-800/50 group-hover/card:border-zinc-700/70"
         )} />
         
         {/* Inner rectangle - main card */}
@@ -106,17 +106,17 @@ export function PromptCard({ prompt, variant = "small", className }: PromptCardP
             "relative flex flex-col border bg-[#0A0A0A] transition-all duration-200 overflow-hidden",
             isLarge 
               ? "border-zinc-800/80 hover:border-zinc-700 h-full" 
-              : "border-zinc-800/70 cursor-pointer group-hover/card:border-zinc-700 h-[350px]"
+              : "border-zinc-800/70 cursor-pointer group-hover/card:border-zinc-700 h-[280px] sm:h-[350px]"
           )}
         >
           {/* Content Area with Custom Scrollbar */}
           <div className={cn(
             "h-full overflow-y-auto",
-            isLarge ? "p-8" : "p-6"
+            isLarge ? "p-4 sm:p-8" : "p-4 sm:p-6"
           )}>
             <pre className={cn(
               "whitespace-pre-wrap font-mono leading-relaxed text-zinc-300",
-              isLarge ? "text-sm pr-4" : "text-[13px] pr-4"
+              isLarge ? "text-xs sm:text-sm pr-2 sm:pr-4" : "text-xs sm:text-[13px] pr-2 sm:pr-4"
             )}>
               {prompt.content}
             </pre>
@@ -124,28 +124,28 @@ export function PromptCard({ prompt, variant = "small", className }: PromptCardP
 
           {/* Floating Action Buttons - Only for small variant */}
           {!isLarge && (
-            <div className="absolute bottom-4 right-4 z-10 flex gap-2 opacity-0 transition-opacity duration-200 group-hover/card:opacity-100">
+            <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 z-10 flex gap-1.5 sm:gap-2 opacity-100 sm:opacity-0 transition-opacity duration-200 group-hover/card:opacity-100">
               <button
                 onClick={handleShare}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:shadow-md"
+                className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:shadow-md"
                 title="Share"
               >
-                <ExternalLink className="h-4 w-4 text-black" />
+                <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-black" />
               </button>
               
               <button
                 onClick={handleCopy}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:shadow-md"
+                className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:shadow-md"
                 title="Copy"
               >
-                <Copy className="h-4 w-4 text-black" />
+                <Copy className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-black" />
               </button>
             </div>
           )}
 
           {/* Action Buttons - Only for large variant (detail page) */}
           {isLarge && (
-            <div className="relative z-10 flex items-center justify-center gap-4 border-t border-zinc-800/50 bg-[#0A0A0A] px-8 py-5">
+            <div className="relative z-10 flex flex-wrap items-center justify-center gap-2 sm:gap-4 border-t border-zinc-800/50 bg-[#0A0A0A] px-4 sm:px-8 py-3 sm:py-5">
               {actions.map(({ label, icon: Icon, onClick }) => (
                 <Button
                   key={label}
@@ -153,9 +153,9 @@ export function PromptCard({ prompt, variant = "small", className }: PromptCardP
                   variant="ghost"
                   onClick={onClick}
                   size="sm"
-                  className="gap-2 text-sm text-zinc-400 hover:text-zinc-200"
+                  className="gap-1.5 sm:gap-2 text-xs sm:text-sm text-zinc-400 hover:text-zinc-200"
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   {label}
                 </Button>
               ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Job } from "@/lib/data";
+import { Job } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 
 interface JobCardProps {
@@ -15,25 +15,25 @@ export function JobCard({ job, variant = "list", className }: JobCardProps) {
   return (
     <div
       className={cn(
-        "group relative flex flex-col rounded-lg border border-zinc-800 bg-zinc-900/40 p-6 transition-all hover:border-zinc-700",
+        "group relative flex flex-col rounded-lg border border-zinc-800 bg-zinc-900/40 p-4 sm:p-6 transition-all hover:border-zinc-700",
         isFeatured && "h-full",
         className
       )}
     >
       {/* Company Logo and Header */}
-      <div className="mb-4 flex items-start justify-between">
+      <div className="mb-3 sm:mb-4 flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-0">
         <div className="flex items-center gap-3">
           {/* Company Logo */}
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-zinc-800 text-lg font-semibold text-white">
+          <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-zinc-800 text-base sm:text-lg font-semibold text-white shrink-0">
             {job.companyLogo || job.company.charAt(0)}
           </div>
           <div>
-            <div className="flex items-center gap-2 text-sm text-zinc-400">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-zinc-400">
               <span>{job.company}</span>
               {job.experience && (
                 <>
-                  <span>•</span>
-                  <span>{job.experience}</span>
+                  <span className="hidden sm:inline">•</span>
+                  <span className="hidden sm:inline">{job.experience}</span>
                 </>
               )}
               <span>•</span>
@@ -43,20 +43,20 @@ export function JobCard({ job, variant = "list", className }: JobCardProps) {
             </div>
           </div>
         </div>
-        <button className="rounded-md border border-zinc-700 bg-zinc-800 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700">
+        <button className="w-full sm:w-auto rounded-md border border-zinc-700 bg-zinc-800 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700">
           View
         </button>
       </div>
 
       {/* Job Title */}
-      <h3 className="mb-2 text-lg font-semibold text-white">{job.title}</h3>
+      <h3 className="mb-2 text-base sm:text-lg font-semibold text-white">{job.title}</h3>
 
       {/* Job Description */}
-      <p className="line-clamp-2 text-sm text-zinc-400">{job.description}</p>
+      <p className="line-clamp-2 text-xs sm:text-sm text-zinc-400">{job.description}</p>
 
       {/* Tags if available */}
       {job.tags && job.tags.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2">
           {job.tags.map((tag) => (
             <span
               key={tag}

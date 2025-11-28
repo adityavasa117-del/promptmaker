@@ -1,11 +1,17 @@
 {
-  "servers": {
-    "shadcn": {
-      "command": "npx",
-      "args": [
-        "shadcn@latest",
-        "mcp"
-      ]
-    }
-  }
+	"servers": {
+		"shadcn": {
+			"command": "npx",
+			"args": [
+				"shadcn@latest",
+				"mcp"
+			],
+			"type": "stdio"
+		},
+		"supabase sai prompt": {
+			"url": "https://mcp.supabase.com/mcp?project_ref=owdgunlrrnmrlnyixomp",
+			"type": "http"
+		}
+	},
+	"inputs": []
 }

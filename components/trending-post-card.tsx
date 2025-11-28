@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { TrendingPost } from "@/lib/data";
+import { TrendingPost } from "@/lib/queries";
 import { ChevronUp, ChevronDown, ExternalLink } from "lucide-react";
 
 interface TrendingPostCardProps {
@@ -10,7 +10,7 @@ interface TrendingPostCardProps {
 }
 
 export function TrendingPostCard({ post }: TrendingPostCardProps) {
-  const [votes, setVotes] = useState(post.votes);
+  const [votes, setVotes] = useState(post.votes ?? 0);
   const [userVote, setUserVote] = useState<"up" | "down" | null>(null);
 
   const handleUpvote = () => {
@@ -40,8 +40,8 @@ export function TrendingPostCard({ post }: TrendingPostCardProps) {
   };
 
   return (
-    <div className="group relative border-b border-border/40 py-6 transition-colors hover:bg-muted/20">
-      <div className="flex items-start gap-4">
+    <div className="group relative border-b border-border/40 py-4 sm:py-6 transition-colors hover:bg-muted/20">
+      <div className="flex items-start gap-3 sm:gap-4">
         {/* Author Avatar */}
         <div className="shrink-0">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
@@ -52,49 +52,49 @@ export function TrendingPostCard({ post }: TrendingPostCardProps) {
         </div>
 
         {/* Content */}
-        <div className="flex-1 space-y-2">
+        <div className="flex-1 min-w-0 space-y-1.5 sm:space-y-2">
           {/* Author Name */}
           <div className="flex items-center gap-2">
-            <span className="font-mono text-sm text-muted-foreground">
+            <span className="font-mono text-xs sm:text-sm text-muted-foreground">
               {post.author}
             </span>
           </div>
 
           {/* Title */}
-          <h3 className="group-hover:text-primary flex items-center gap-2 text-lg font-semibold text-foreground transition-colors">
-            <Link href={post.url || "#"} className="hover:underline">
+          <h3 className="group-hover:text-primary flex items-center gap-2 text-base sm:text-lg font-semibold text-foreground transition-colors">
+            <Link href={post.url || "#"} className="hover:underline wrap-break-word">
               {post.title}
             </Link>
             {post.url && (
-              <ExternalLink className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+              <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground opacity-100 sm:opacity-0 transition-opacity group-hover:opacity-100" />
             )}
           </h3>
 
           {/* Description */}
-          <p className="text-sm leading-relaxed text-muted-foreground">
+          <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground line-clamp-2 sm:line-clamp-none">
             {post.description}
           </p>
         </div>
 
         {/* Vote Buttons - Positioned on the right */}
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-0.5 sm:gap-1 shrink-0">
           <button
             onClick={handleUpvote}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-foreground opacity-0 shadow-sm transition-all hover:bg-white/90 group-hover:opacity-100"
+            className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white text-foreground opacity-100 sm:opacity-0 shadow-sm transition-all hover:bg-white/90 group-hover:opacity-100"
             aria-label="Upvote"
           >
             <ChevronUp
-              className={`h-5 w-5 ${userVote === "up" ? "fill-current text-green-600" : ""}`}
+              className={`h-4 w-4 sm:h-5 sm:w-5 ${userVote === "up" ? "fill-current text-green-600" : ""}`}
             />
           </button>
           
-          <span className="font-mono text-sm font-medium text-foreground">
+          <span className="font-mono text-xs sm:text-sm font-medium text-foreground">
             {votes}
           </span>
           
           <button
             onClick={handleDownvote}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-foreground opacity-0 shadow-sm transition-all hover:bg-white/90 group-hover:opacity-100"
+            className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white text-foreground opacity-100 sm:opacity-0 shadow-sm transition-all hover:bg-white/90 group-hover:opacity-100"
             aria-label="Downvote"
           >
             <ChevronDown

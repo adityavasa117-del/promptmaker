@@ -1,15 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { JobCard } from "@/components/job-card";
 import { FeaturedJobCard } from "@/components/featured-job-card";
 import { Button } from "@/components/ui/button";
-import { jobs } from "@/lib/data";
+import { getJobs, Job } from "@/lib/queries";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 export default function JobsPage() {
   const [showAddJobForm, setShowAddJobForm] = useState(false);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchJobs() {
+      setLoading(true);
+      const data = await getJobs();
+      setJobs(data);
+      setLoading(false);
+    }
+    fetchJobs();
+  }, []);
 
   // Separate featured and regular jobs
   const featuredJobs = jobs.filter((job) => job.isFeatured);
@@ -86,82 +98,84 @@ export default function JobsPage() {
         </div>
 
         {/* Brand Attribution */}
-        <div className="mt-16 flex items-center justify-end gap-2 text-sm text-zinc-500">
-          <div className="flex h-6 w-6 items-center justify-center rounded bg-purple-600">
-            <svg viewBox="0 0 24 24" className="h-4 w-4 fill-white">
-              <rect x="4" y="4" width="16" height="16" rx="2" />
-            </svg>
+        <div className="mt-12 sm:mt-16 flex flex-col sm:flex-row items-center justify-end gap-2 text-xs sm:text-sm text-zinc-500">
+          <div className="flex items-center gap-2">
+            <div className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded bg-purple-600">
+              <svg viewBox="0 0 24 24" className="h-3 w-3 sm:h-4 sm:w-4 fill-white">
+                <rect x="4" y="4" width="16" height="16" rx="2" />
+              </svg>
+            </div>
+            <span className="font-semibold text-white">Brand.dev</span>
           </div>
-          <span className="font-semibold text-white">Brand.dev</span>
-          <span>AI API to personalize your product with logo and company info from any domain.</span>
+          <span className="text-center sm:text-left">AI API to personalize your product with logo and company info from any domain.</span>
         </div>
       </main>
 
       {/* Add Job Form Modal (placeholder) */}
       {showAddJobForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-          <div className="w-full max-w-2xl rounded-lg border border-zinc-800 bg-zinc-900 p-8">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-semibold text-white">Add Job Listing</h2>
+          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg border border-zinc-800 bg-zinc-900 p-4 sm:p-8">
+            <div className="mb-4 sm:mb-6 flex items-center justify-between">
+              <h2 className="text-xl sm:text-2xl font-semibold text-white">Add Job Listing</h2>
               <button
                 onClick={() => setShowAddJobForm(false)}
-                className="text-zinc-400 transition-colors hover:text-white"
+                className="text-zinc-400 transition-colors hover:text-white p-2"
               >
                 ✕
               </button>
             </div>
 
-            <form className="space-y-4">
+            <form className="space-y-3 sm:space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-zinc-300">
+                <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-zinc-300">
                   Company Name
                 </label>
                 <input
                   type="text"
-                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
+                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
                   placeholder="Enter company name"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-zinc-300">
+                <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-zinc-300">
                   Job Title
                 </label>
                 <input
                   type="text"
-                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
+                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
                   placeholder="e.g. Senior Software Engineer"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-zinc-300">
+                <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-zinc-300">
                   Description
                 </label>
                 <textarea
                   rows={4}
-                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
+                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
                   placeholder="Describe the role and responsibilities..."
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-300">
+                  <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-zinc-300">
                     Location
                   </label>
                   <input
                     type="text"
-                    className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
+                    className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
                     placeholder="e.g. San Francisco, Remote"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-300">
+                  <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-zinc-300">
                     Type
                   </label>
-                  <select className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-4 py-2 text-white focus:border-zinc-600 focus:outline-none">
+                  <select className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white focus:border-zinc-600 focus:outline-none">
                     <option value="Remote">Remote</option>
                     <option value="On site">On site</option>
                     <option value="Hybrid">Hybrid</option>
@@ -171,12 +185,12 @@ export default function JobsPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-zinc-300">
+                <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-zinc-300">
                   Experience Level
                 </label>
                 <input
                   type="text"
-                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-4 py-2 text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
+                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
                   placeholder="e.g. 2+ years"
                 />
               </div>
@@ -187,22 +201,22 @@ export default function JobsPage() {
                   id="featured"
                   className="h-4 w-4 rounded border-zinc-700 bg-zinc-800 text-white focus:ring-0 focus:ring-offset-0"
                 />
-                <label htmlFor="featured" className="text-sm text-zinc-300">
+                <label htmlFor="featured" className="text-xs sm:text-sm text-zinc-300">
                   Feature this job listing (+$99)
                 </label>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4">
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-4">
                 <Button
                   type="button"
                   onClick={() => setShowAddJobForm(false)}
-                  className="rounded-md border border-zinc-700 bg-transparent px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+                  className="w-full sm:w-auto rounded-md border border-zinc-700 bg-transparent px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="rounded-md bg-white px-6 py-2 text-sm font-medium text-black transition-colors hover:bg-zinc-200"
+                  className="w-full sm:w-auto rounded-md bg-white px-6 py-2 text-sm font-medium text-black transition-colors hover:bg-zinc-200"
                 >
                   Post Job
                 </Button>
