@@ -73,7 +73,7 @@ export default function Home() {
 
             {/* Prompts Grid */}
             {!loading && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-x-4 sm:gap-y-6 pb-20 lg:pb-0">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-x-4 sm:gap-y-6 pb-20 lg:pb-0">
                 {prompts.map((prompt) => (
                   <PromptCard key={prompt.id} prompt={prompt} />
                 ))}

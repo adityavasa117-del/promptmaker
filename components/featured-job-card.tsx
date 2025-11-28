@@ -17,8 +17,20 @@ export function FeaturedJobCard({ job, className }: FeaturedJobCardProps) {
       )}
     >
       {/* Company Logo */}
-      <div className="mb-3 sm:mb-4 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-lg bg-zinc-800 text-lg sm:text-xl font-semibold text-white">
-        {job.companyLogo || job.company.charAt(0)}
+      <div className="mb-3 sm:mb-4 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-lg bg-zinc-800 text-lg sm:text-xl font-semibold text-white overflow-hidden">
+        {job.companyLogo && job.companyLogo.startsWith('http') ? (
+          <img 
+            src={job.companyLogo} 
+            alt={job.company} 
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.parentElement!.textContent = job.company.charAt(0);
+            }}
+          />
+        ) : (
+          job.company.charAt(0)
+        )}
       </div>
 
       {/* Company Name and Location */}

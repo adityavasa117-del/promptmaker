@@ -5,13 +5,25 @@ import { Header } from "@/components/header";
 import { JobCard } from "@/components/job-card";
 import { FeaturedJobCard } from "@/components/featured-job-card";
 import { Button } from "@/components/ui/button";
-import { getJobs, Job } from "@/lib/queries";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { getJobs, createJob, Job } from "@/lib/queries";
+import { ChevronLeft, ChevronRight, Plus, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function JobsPage() {
   const [showAddJobForm, setShowAddJobForm] = useState(false);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    company: "",
+    title: "",
+    description: "",
+    location: "",
+    type: "Remote",
+    experience: "",
+  });
 
   useEffect(() => {
     async function fetchJobs() {
@@ -22,6 +34,52 @@ export default function JobsPage() {
     }
     fetchJobs();
   }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.company.trim() || !formData.title.trim() || !formData.description.trim() || !formData.location.trim()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const newJob = await createJob({
+        company: formData.company.trim(),
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        location: formData.location.trim(),
+        type: formData.type,
+        experience: formData.experience.trim() || null,
+        is_featured: false,
+      });
+
+      if (newJob) {
+        setJobs((prev) => [newJob, ...prev]);
+        toast.success("Job listing created successfully!");
+        setShowAddJobForm(false);
+        setFormData({
+          company: "",
+          title: "",
+          description: "",
+          location: "",
+          type: "Remote",
+          experience: "",
+        });
+      }
+    } catch (error) {
+      console.error("Error creating job:", error);
+      toast.error("Failed to create job listing. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   // Separate featured and regular jobs
   const featuredJobs = jobs.filter((job) => job.isFeatured);
@@ -41,7 +99,7 @@ export default function JobsPage() {
             <div>
               <h2 className="text-2xl font-semibold text-white">Featured Jobs</h2>
               <p className="mt-1 text-sm text-zinc-400">
-                Browse positions or post a job to reach 250,000+ monthly active developers.
+                Browse positions or post a job to reach 250,000+ monthly active writers.
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -62,7 +120,7 @@ export default function JobsPage() {
           </div>
 
           {/* Featured Jobs Grid */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-5 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {featuredJobs.map((job) => (
               <FeaturedJobCard key={job.id} job={job} />
             ))}
@@ -75,10 +133,10 @@ export default function JobsPage() {
           <div className="mb-8 flex items-center justify-between rounded-lg border border-zinc-800 bg-linear-to-br from-zinc-900 to-black p-8">
             <div>
               <h3 className="mb-2 text-3xl font-bold text-white">
-                Reach 300k+ developers per month.
+                Reach 300k+ writers per month.
               </h3>
               <p className="text-zinc-400">
-                Connect with top talent and grow your team faster by reaching a dedicated community of developers.
+                Connect with top writing talent and grow your team faster by reaching a dedicated community of writers.
               </p>
             </div>
             <Button
@@ -90,25 +148,13 @@ export default function JobsPage() {
           </div>
 
           {/* Regular Jobs List */}
-          <div className="space-y-4">
+          <div className="space-y-5 sm:space-y-4">
             {regularJobs.map((job) => (
               <JobCard key={job.id} job={job} variant="list" />
             ))}
           </div>
         </div>
 
-        {/* Brand Attribution */}
-        <div className="mt-12 sm:mt-16 flex flex-col sm:flex-row items-center justify-end gap-2 text-xs sm:text-sm text-zinc-500">
-          <div className="flex items-center gap-2">
-            <div className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded bg-purple-600">
-              <svg viewBox="0 0 24 24" className="h-3 w-3 sm:h-4 sm:w-4 fill-white">
-                <rect x="4" y="4" width="16" height="16" rx="2" />
-              </svg>
-            </div>
-            <span className="font-semibold text-white">Brand.dev</span>
-          </div>
-          <span className="text-center sm:text-left">AI API to personalize your product with logo and company info from any domain.</span>
-        </div>
       </main>
 
       {/* Add Job Form Modal (placeholder) */}
@@ -125,49 +171,65 @@ export default function JobsPage() {
               </button>
             </div>
 
-            <form className="space-y-3 sm:space-y-4">
+            <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-zinc-300">
-                  Company Name
+                  Company Name *
                 </label>
                 <input
                   type="text"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleInputChange}
                   className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
                   placeholder="Enter company name"
+                  required
                 />
               </div>
 
               <div>
                 <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-zinc-300">
-                  Job Title
+                  Job Title *
                 </label>
                 <input
                   type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
                   className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
                   placeholder="e.g. Senior Software Engineer"
+                  required
                 />
               </div>
 
               <div>
                 <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-zinc-300">
-                  Description
+                  Description *
                 </label>
                 <textarea
                   rows={4}
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
                   className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
                   placeholder="Describe the role and responsibilities..."
+                  required
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-zinc-300">
-                    Location
+                    Location *
                   </label>
                   <input
                     type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
                     className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
                     placeholder="e.g. San Francisco, Remote"
+                    required
                   />
                 </div>
 
@@ -175,7 +237,12 @@ export default function JobsPage() {
                   <label className="mb-1.5 sm:mb-2 block text-xs sm:text-sm font-medium text-zinc-300">
                     Type
                   </label>
-                  <select className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white focus:border-zinc-600 focus:outline-none">
+                  <select
+                    name="type"
+                    value={formData.type}
+                    onChange={handleInputChange}
+                    className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white focus:border-zinc-600 focus:outline-none"
+                  >
                     <option value="Remote">Remote</option>
                     <option value="On site">On site</option>
                     <option value="Hybrid">Hybrid</option>
@@ -190,35 +257,36 @@ export default function JobsPage() {
                 </label>
                 <input
                   type="text"
+                  name="experience"
+                  value={formData.experience}
+                  onChange={handleInputChange}
                   className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 sm:px-4 py-2 text-sm sm:text-base text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
                   placeholder="e.g. 2+ years"
                 />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="featured"
-                  className="h-4 w-4 rounded border-zinc-700 bg-zinc-800 text-white focus:ring-0 focus:ring-offset-0"
-                />
-                <label htmlFor="featured" className="text-xs sm:text-sm text-zinc-300">
-                  Feature this job listing (+$99)
-                </label>
               </div>
 
               <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-4">
                 <Button
                   type="button"
                   onClick={() => setShowAddJobForm(false)}
+                  disabled={submitting}
                   className="w-full sm:w-auto rounded-md border border-zinc-700 bg-transparent px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="w-full sm:w-auto rounded-md bg-white px-6 py-2 text-sm font-medium text-black transition-colors hover:bg-zinc-200"
+                  disabled={submitting}
+                  className="w-full sm:w-auto rounded-md bg-white px-6 py-2 text-sm font-medium text-black transition-colors hover:bg-zinc-200 disabled:opacity-50"
                 >
-                  Post Job
+                  {submitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Posting...
+                    </>
+                  ) : (
+                    "Post Job"
+                  )}
                 </Button>
               </div>
             </form>

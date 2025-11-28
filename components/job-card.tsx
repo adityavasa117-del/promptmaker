@@ -24,8 +24,20 @@ export function JobCard({ job, variant = "list", className }: JobCardProps) {
       <div className="mb-3 sm:mb-4 flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-0">
         <div className="flex items-center gap-3">
           {/* Company Logo */}
-          <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-zinc-800 text-base sm:text-lg font-semibold text-white shrink-0">
-            {job.companyLogo || job.company.charAt(0)}
+          <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-zinc-800 text-base sm:text-lg font-semibold text-white shrink-0 overflow-hidden">
+            {job.companyLogo && job.companyLogo.startsWith('http') ? (
+              <img 
+                src={job.companyLogo} 
+                alt={job.company} 
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement!.textContent = job.company.charAt(0);
+                }}
+              />
+            ) : (
+              job.company.charAt(0)
+            )}
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-zinc-400">

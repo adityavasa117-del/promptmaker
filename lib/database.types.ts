@@ -199,6 +199,48 @@ export type Database = {
           },
         ]
       }
+      mcps: {
+        Row: {
+          id: string
+          name: string
+          description: string
+          icon_url: string | null
+          cursor_deep_link: string | null
+          install_instructions_url: string | null
+          company: string | null
+          pricing_tier: 'standard' | 'featured' | 'premium'
+          is_featured: boolean | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          name: string
+          description: string
+          icon_url?: string | null
+          cursor_deep_link?: string | null
+          install_instructions_url?: string | null
+          company?: string | null
+          pricing_tier?: 'standard' | 'featured' | 'premium'
+          is_featured?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string
+          icon_url?: string | null
+          cursor_deep_link?: string | null
+          install_instructions_url?: string | null
+          company?: string | null
+          pricing_tier?: 'standard' | 'featured' | 'premium'
+          is_featured?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -2,41 +2,44 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ChevronUp, ExternalLink, Loader2 } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { TrendingPost } from "@/lib/queries";
-import { ChevronUp, ChevronDown, ExternalLink } from "lucide-react";
 
 interface TrendingPostCardProps {
   post: TrendingPost;
+  onVote?: () => void;
+  isVoting?: boolean;
 }
 
-export function TrendingPostCard({ post }: TrendingPostCardProps) {
-  const [votes, setVotes] = useState(post.votes ?? 0);
-  const [userVote, setUserVote] = useState<"up" | "down" | null>(null);
+export function TrendingPostCard({ post, onVote, isVoting = false }: TrendingPostCardProps) {
+  const [userVoted, setUserVoted] = useState(false);
 
-  const handleUpvote = () => {
-    if (userVote === "up") {
-      setVotes(votes - 1);
-      setUserVote(null);
-    } else if (userVote === "down") {
-      setVotes(votes + 2);
-      setUserVote("up");
-    } else {
-      setVotes(votes + 1);
-      setUserVote("up");
+  const handleVoteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isVoting && onVote) {
+      onVote();
+      setUserVoted(true);
     }
   };
 
-  const handleDownvote = () => {
-    if (userVote === "down") {
-      setVotes(votes + 1);
-      setUserVote(null);
-    } else if (userVote === "up") {
-      setVotes(votes - 2);
-      setUserVote("down");
-    } else {
-      setVotes(votes - 1);
-      setUserVote("down");
-    }
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'Recently';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;
+    return date.toLocaleDateString();
+  };
+
+  const getAuthorInitial = (author: string) => {
+    return author.charAt(0).toUpperCase();
   };
 
   return (
@@ -44,31 +47,50 @@ export function TrendingPostCard({ post }: TrendingPostCardProps) {
       <div className="flex items-start gap-3 sm:gap-4">
         {/* Author Avatar */}
         <div className="shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-            <span className="font-mono text-xs font-medium text-muted-foreground">
-              {post.author.charAt(0).toUpperCase()}
-            </span>
-          </div>
+          <Avatar className="w-8 h-8">
+            <AvatarFallback className="bg-muted text-muted-foreground text-xs">
+              {getAuthorInitial(post.author)}
+            </AvatarFallback>
+          </Avatar>
         </div>
 
         {/* Content */}
         <div className="flex-1 min-w-0 space-y-1.5 sm:space-y-2">
-          {/* Author Name */}
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs sm:text-sm text-muted-foreground">
-              {post.author}
-            </span>
+          {/* Author Name and Date */}
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+            <span className="font-medium">{post.author}</span>
+            <span>•</span>
+            <span>{formatDate(post.created_at)}</span>
           </div>
 
           {/* Title */}
-          <h3 className="group-hover:text-primary flex items-center gap-2 text-base sm:text-lg font-semibold text-foreground transition-colors">
-            <Link href={post.url || "#"} className="hover:underline wrap-break-word">
-              {post.title}
-            </Link>
-            {post.url && (
-              <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground opacity-100 sm:opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="flex items-start gap-2">
+            {post.url ? (
+              <Link
+                href={post.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group-hover:text-primary flex-1 text-base sm:text-lg font-semibold text-foreground transition-colors leading-tight hover:underline cursor-pointer"
+              >
+                {post.title}
+              </Link>
+            ) : (
+              <h3 className="group-hover:text-primary flex-1 text-base sm:text-lg font-semibold text-foreground transition-colors leading-tight">
+                {post.title}
+              </h3>
             )}
-          </h3>
+            {post.url && (
+              <Link
+                href={post.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 text-muted-foreground hover:text-foreground transition-colors opacity-100 sm:opacity-0 group-hover:opacity-100"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ExternalLink className="h-4 w-4" />
+              </Link>
+            )}
+          </div>
 
           {/* Description */}
           <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground line-clamp-2 sm:line-clamp-none">
@@ -76,31 +98,32 @@ export function TrendingPostCard({ post }: TrendingPostCardProps) {
           </p>
         </div>
 
-        {/* Vote Buttons - Positioned on the right */}
-        <div className="flex flex-col items-center gap-0.5 sm:gap-1 shrink-0">
-          <button
-            onClick={handleUpvote}
-            className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white text-foreground opacity-100 sm:opacity-0 shadow-sm transition-all hover:bg-white/90 group-hover:opacity-100"
+        {/* Vote Button - Only upvote */}
+        <div className="flex flex-col items-center gap-1 shrink-0">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 sm:h-9 sm:w-9 p-0 bg-background hover:bg-muted border-border hover:border-border/60 transition-all"
+            onClick={handleVoteClick}
+            disabled={isVoting}
             aria-label="Upvote"
           >
-            <ChevronUp
-              className={`h-4 w-4 sm:h-5 sm:w-5 ${userVote === "up" ? "fill-current text-green-600" : ""}`}
-            />
-          </button>
+            {isVoting ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : (
+              <ChevronUp 
+                className={`h-4 w-4 sm:h-5 sm:w-5 transition-colors ${
+                  userVoted 
+                    ? 'text-green-600 fill-current' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`} 
+              />
+            )}
+          </Button>
           
           <span className="font-mono text-xs sm:text-sm font-medium text-foreground">
-            {votes}
+            {post.votes || 0}
           </span>
-          
-          <button
-            onClick={handleDownvote}
-            className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white text-foreground opacity-100 sm:opacity-0 shadow-sm transition-all hover:bg-white/90 group-hover:opacity-100"
-            aria-label="Downvote"
-          >
-            <ChevronDown
-              className={`h-5 w-5 ${userVote === "down" ? "fill-current text-red-600" : ""}`}
-            />
-          </button>
         </div>
       </div>
     </div>
