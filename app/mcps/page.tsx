@@ -58,40 +58,46 @@ export default function MCPsPage() {
     <div className="min-h-screen bg-black">
       <Header />
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8 sm:px-6 lg:px-8">
         {/* Featured MCPs Section */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Featured Tools</h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Browse writing tools or post a tool to reach 250,000+ monthly active writers.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Link href="/mcps/add">
-                <Button className="rounded-full bg-surface hover:bg-surface-highlight border border-border text-foreground">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add new
-                </Button>
-              </Link>
-              <div className="flex gap-1">
-                <button
-                  onClick={handlePrevCarousel}
-                  disabled={carouselIndex === 0}
-                  className="p-2 rounded-full bg-surface border border-border hover:bg-surface-highlight disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  aria-label="Previous"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={handleNextCarousel}
-                  disabled={carouselIndex >= featuredMCPs.length - 4}
-                  className="p-2 rounded-full bg-surface border border-border hover:bg-surface-highlight disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  aria-label="Next"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
+        <div className="mb-8 sm:mb-12">
+          {/* Header - Stacked on mobile, inline on larger screens */}
+          <div className="mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {/* Title and Description */}
+              <div className="flex-1">
+                <h1 className="text-xl sm:text-2xl font-bold text-foreground">Featured Tools</h1>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Browse writing tools or post a tool to reach 250,000+ monthly active writers.
+                </p>
+              </div>
+              
+              {/* Actions - Button and Carousel Controls */}
+              <div className="flex items-center justify-between sm:justify-end gap-3">
+                <Link href="/mcps/add">
+                  <Button size="sm" className="rounded-full bg-surface hover:bg-surface-highlight border border-border text-foreground text-sm">
+                    <Plus className="h-4 w-4 mr-1.5" />
+                    Add new
+                  </Button>
+                </Link>
+                <div className="flex gap-1.5">
+                  <button
+                    onClick={handlePrevCarousel}
+                    disabled={carouselIndex === 0}
+                    className="p-2 rounded-full bg-surface border border-border hover:bg-surface-highlight disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Previous"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={handleNextCarousel}
+                    disabled={carouselIndex >= featuredMCPs.length - 4}
+                    className="p-2 rounded-full bg-surface border border-border hover:bg-surface-highlight disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Next"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>

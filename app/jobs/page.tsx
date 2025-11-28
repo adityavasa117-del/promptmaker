@@ -91,29 +91,41 @@ export default function JobsPage() {
       <Header />
 
       {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8 sm:px-6 lg:px-8">
         {/* Featured Jobs Section */}
-        <div className="mb-16">
+        <div className="mb-10 sm:mb-16">
           {/* Section Header */}
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-semibold text-white">Featured Jobs</h2>
-              <p className="mt-1 text-sm text-zinc-400">
+          <div className="mb-6 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
+            <div className="flex-1">
+              <div className="flex items-center justify-between sm:justify-start gap-3">
+                <h2 className="text-xl sm:text-2xl font-semibold text-white">Featured Jobs</h2>
+                {/* Mobile navigation arrows - inline with title */}
+                <div className="flex items-center gap-2 sm:hidden">
+                  <button className="flex h-8 w-8 items-center justify-center rounded-md border border-zinc-700 bg-transparent text-white transition-colors hover:bg-zinc-800">
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button className="flex h-8 w-8 items-center justify-center rounded-md border border-zinc-700 bg-transparent text-white transition-colors hover:bg-zinc-800">
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+              <p className="mt-1.5 text-sm text-zinc-400 max-w-md">
                 Browse positions or post a job to reach 250,000+ monthly active writers.
               </p>
             </div>
             <div className="flex items-center gap-3">
               <Button
                 onClick={() => setShowAddJobForm(true)}
-                className="rounded-md border border-zinc-700 bg-transparent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+                className="flex-1 sm:flex-none rounded-md border border-zinc-700 bg-transparent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add job listing
               </Button>
-              <button className="flex h-10 w-10 items-center justify-center rounded-md border border-zinc-700 bg-transparent text-white transition-colors hover:bg-zinc-800">
+              {/* Desktop navigation arrows */}
+              <button className="hidden sm:flex h-10 w-10 items-center justify-center rounded-md border border-zinc-700 bg-transparent text-white transition-colors hover:bg-zinc-800">
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              <button className="flex h-10 w-10 items-center justify-center rounded-md border border-zinc-700 bg-transparent text-white transition-colors hover:bg-zinc-800">
+              <button className="hidden sm:flex h-10 w-10 items-center justify-center rounded-md border border-zinc-700 bg-transparent text-white transition-colors hover:bg-zinc-800">
                 <ChevronRight className="h-5 w-5" />
               </button>
             </div>
